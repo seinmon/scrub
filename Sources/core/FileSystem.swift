@@ -9,25 +9,29 @@ import Foundation
 
 /// File system handler.
 struct FileSystem {
-    private let baseDirectory: URL
+    struct Directory {
+        static var homeDirectoryForCurrentUser: URL {
+            FileManager.default.homeDirectoryForCurrentUser
+        }
 
-    /// Home directory of the current user.
-    static var homeDirectoryForCurrentUser: URL {
-        return FileManager.default.homeDirectoryForCurrentUser
+        static var applicationSupport: [URL] {
+            FileManager.default.urls(for: .applicationSupportDirectory, in: .allDomainsMask)
+        }
+
+        static var applications: [URL] {
+            FileManager.default.urls(for: .applicationDirectory, in: .allDomainsMask)
+        }
     }
 
-    static var applicationDirectories: [URL] {
-        return FileManager.default.urls(for: .applicationDirectory, in: .allDomainsMask)
-    }
+    struct File {
+        static var config: URL {
+            let applicationSupportDir = FileManager.default.urls(for: .applicationSupportDirectory,
+                                                                 in: .systemDomainMask)
+            guard applicationSupportDir.count == 1 else {
+                return URL(filePath: "/Library/Application Support/scrub/spaces.plist")
+            }
 
-    /// A representation of repositories owned by scrub.
-    enum ScrubDirectory: String, Path {
-
-        /// Config directory.
-        case config = ".scrub"
-
-        var url: URL {
-            FileSystem.path(self.rawValue, relativeToCurrentUserHome: true)
+            return applicationSupportDir[0].appending(path: "scrub/spaces.plist")
         }
     }
 
@@ -35,40 +39,9 @@ struct FileSystem {
         FileManager.default
     }
 
-    /// Create a file system handle at home directory of the current user.
-    init() {
-        self.baseDirectory = FileSystem.homeDirectoryForCurrentUser
-    }
-
-    /// Create a file system handle at a scrub directory.
-    ///
-    /// - Parameters:
-    ///   - baseDirectory: A scrub directory to use as the working directory.
-    init?(at baseDirectory: FileSystem.ScrubDirectory) {
-        self.baseDirectory = baseDirectory.url
-
-        var baseDirExists: ObjCBool = false
-        fileManager.fileExists(atPath: baseDirectory.url.path(), isDirectory: &baseDirExists)
-
-        if !baseDirExists.boolValue {
-            do {
-                try createDirectory(at: baseDirectory.url, withIntermediateDirectories: true)
-            } catch {
-                return nil
-            }
-        }
-    }
-
-    /// Create a file system handle at a directory.
-    ///
-    /// - Parameters:
-    ///   - baseDirectory: A `URL` to use as the working directory.
-    init?(at baseDirectory: URL) {
-        guard (try? baseDirectory.isDirectory) ?? false else {
-            return nil
-        }
-
-        self.baseDirectory = baseDirectory
+    /// Create a file system handle.
+    public init() {
+        // Makes internal available.
     }
 
     /// Locate files and subdirectories within working directory using a query.
@@ -78,17 +51,9 @@ struct FileSystem {
     ///             directory is returned.
     ///
     /// - Returns: An optional set of `URL`s within the working directory.
-    func locate(_ query: Regex<Substring>, in workingDirectory: URL? = nil) throws -> Set<URL> {
+    func locate(_ query: Regex<Substring>, in workingDirectory: URL) throws -> Set<URL> {
         var findings = Set<URL>()
-
-        var resolvedDirectory: URL! = nil
-
-        // XXX - resolvedDirectory is force unwrapped. Be careful when changing!
-        if let workingDirectory = workingDirectory {
-            resolvedDirectory = workingDirectory.resolvingSymlinksInPath()
-        } else {
-            resolvedDirectory = baseDirectory.resolvingSymlinksInPath()
-        }
+        let resolvedDirectory = workingDirectory.resolvingSymlinksInPath()
 
         if let enumerator = fileManager.enumerator(at: resolvedDirectory,
                                                    includingPropertiesForKeys: nil,
@@ -131,16 +96,4 @@ struct FileSystem {
         try fileManager.removeItem(at: url)
     }
 
-    /// Generate a `URL` using a path `String`.
-    ///
-    /// - Parameters:
-    ///   - path: Path to the target file or directory.
-    ///   - fromHome: If set, the generated path is relative to home directory of the current user.
-    ///
-    /// - Returns: A `URL` to the target location.
-    static func path(_ path: String, relativeToCurrentUserHome fromHome: Bool) -> URL {
-        return fromHome
-        ? FileSystem.homeDirectoryForCurrentUser.appending(path: path)
-        : URL(filePath: path)
-    }
 }

@@ -1,30 +1,39 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "scrub",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v14)],
     products: [
         .executable(
             name: "scrub",
-            targets: ["scrub"]
+            targets: ["Scrub"]
         ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
     ],
     targets: [
-        .executableTarget(
-            name: "scrub",
+        .target(
+            name: "ScrubCore",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]
+            ],
+            path: "Sources/core"
+        ),
+        .executableTarget(
+            name: "Scrub",
+            dependencies: [
+                "ScrubCore",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            path: "Sources/cli"
         ),
         .testTarget(
-            name: "scrubTests",
-            dependencies: ["scrub"]
+            name: "ScrubTests",
+            dependencies: ["Scrub"]
         ),
     ]
 )

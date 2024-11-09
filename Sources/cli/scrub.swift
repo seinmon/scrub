@@ -1,15 +1,15 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
-// 
+//
 // Swift Argument Parser
 // https://swiftpackageindex.com/apple/swift-argument-parser/documentation
 
 import ArgumentParser
 import Foundation
+import ScrubCore
 
 @main
-struct scrub: ParsableCommand {
-
+struct Scrub: ParsableCommand {
     @Argument(help: "Operation to perform.")
     var operation: Operation
 
@@ -24,23 +24,27 @@ struct scrub: ParsableCommand {
     @Flag(name: [.short, .long], help: "If set, files are deleted without user confirmation.")
     var force: Bool = false
 
-    mutating func run() throws {
-        let searchSpace = try SearchSpace(spacesFilePath: spaces)
-        let cleaner = Cleaner(for: fileNameToClean, searchSpace: searchSpace)
-
-        switch operation {
-        case .uninstall:
-            try cleaner.uninstall()
-        case .clean:
-            try cleaner.clean(force: force)
-        case .list:
-            try cleaner.listFiles(in: searchSpace)
+    private var searchSpace: SearchSpace {
+        get throws {
+            try SearchSpace(spacesFilePath: spaces)
         }
     }
-}
 
-enum Operation: String, Codable, CaseIterable, ExpressibleByArgument {
-    case uninstall = "uninstall"
-    case list = "list"
-    case clean = "clean"
+    mutating func run() throws {
+        let operation = try getAction(for: operation)
+        try operation.perform()
+    }
+
+    private func getAction(for operation: Operation) throws -> Action {
+        switch operation {
+        case .uninstall:
+            return try Uninstaller(for: fileNameToClean, in: searchSpace, withForce: force)
+
+        case .clean:
+            return try Cleaner(for: fileNameToClean, in: searchSpace, withForce: force)
+
+        case .list:
+            return try Searcher(for: fileNameToClean, in: searchSpace, withForce: force)
+        }
+    }
 }
