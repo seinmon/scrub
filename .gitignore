@@ -1,4 +1,5 @@
 .DS_Store
+bin/
 Package.resolved
 /.build
 /Packages
