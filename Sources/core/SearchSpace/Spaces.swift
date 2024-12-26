@@ -7,9 +7,11 @@
 
 import Foundation
 
-// This helps us change underlying structure of Spaces.
-/// A representation of spaces file.
+// This enables us to change underlying structure of Spaces without breaking the functionality.
+/// A plist representation of spaces file.
 public struct Spaces: PropertyList, Sequence {
+
+    /// Underlying spaces collection.
     let data: Set<URL>
 
     public func makeIterator() -> Set<URL>.Iterator {

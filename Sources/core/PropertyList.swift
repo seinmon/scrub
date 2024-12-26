@@ -35,8 +35,8 @@ extension PropertyList {
     func write(to url: URL,
                outputFormat: PropertyListSerialization.PropertyListFormat = .xml) throws {
         // Ensures the provided url exists.
-        try FileSystem().createDirectory(at: url.deletingLastPathComponent(),
-                                         withIntermediateDirectories: true)
+        try FileSystem.shared.createDirectory(at: url.deletingLastPathComponent(),
+                                              withIntermediateDirectories: true)
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
         let data = try encoder.encode(self)

@@ -7,9 +7,13 @@
 
 import Foundation
 
+/// Uninstall an Application and cleanup afterwards.
 final public class Uninstaller: DestructiveAction {
 
+    /// `Uninstaller` related errors.
     enum UninstallerError: Error, LocalizedError {
+
+        /// Raised when the target application is not found.
         case bundleIdError(String)
 
         var localizedDescription: String {
@@ -21,11 +25,10 @@ final public class Uninstaller: DestructiveAction {
     }
 
     override public func perform() throws {
-        let fs = FileSystem()
         var installedLocations = Set<URL>()
 
         for applicationDir in FileSystem.Directory.applications {
-            let locations = try fs.locate(Regex(targetFile), in: applicationDir)
+            let locations = try FileSystem.shared.locate(Regex(targetFile), in: applicationDir)
             installedLocations = installedLocations.union(locations)
         }
 

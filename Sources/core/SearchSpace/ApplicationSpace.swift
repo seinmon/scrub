@@ -40,6 +40,7 @@ enum ApplicationSpace: String, CaseIterable {
     /// Root lunch deamons directory.
     case launchDaemonsRoot = "/Library/LaunchDaemons"
 
+    /// Returns the `URL` representing the `ApplicationSpace`.
     var url: URL {
         return self.rawValue.first == "/"
         ? generatePath(self.rawValue, relativeToCurrentUserHome: false)

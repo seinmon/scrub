@@ -10,6 +10,11 @@ import ScrubCore
 
 @main
 struct Scrub: ParsableCommand {
+
+    static let configuration = CommandConfiguration(
+        version: "0.1.0"
+    )
+
     @Argument(help: "Operation to perform.")
     var operation: Operation
 

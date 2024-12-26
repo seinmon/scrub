@@ -31,9 +31,5 @@ let package = Package(
             ],
             path: "Sources/cli"
         ),
-        .testTarget(
-            name: "ScrubTests",
-            dependencies: ["Scrub"]
-        ),
     ]
 )

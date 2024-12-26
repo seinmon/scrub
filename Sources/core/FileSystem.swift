@@ -9,6 +9,8 @@ import Foundation
 
 /// File system handler.
 struct FileSystem {
+
+    /// Constant directories.
     struct Directory {
         static var homeDirectoryForCurrentUser: URL {
             FileManager.default.homeDirectoryForCurrentUser
@@ -23,7 +25,10 @@ struct FileSystem {
         }
     }
 
+    /// Constant file paths.
     struct File {
+
+        /// Config file path that contains default search spaces.
         static var config: URL {
             let applicationSupportDir = FileManager.default.urls(for: .applicationSupportDirectory,
                                                                  in: .systemDomainMask)
@@ -35,14 +40,14 @@ struct FileSystem {
         }
     }
 
+    static let shared = FileSystem()
+
     private var fileManager: FileManager {
         FileManager.default
     }
 
     /// Create a file system handle.
-    public init() {
-        // Makes internal available.
-    }
+    private init() { }
 
     /// Locate files and subdirectories within working directory using a query.
     ///
@@ -51,7 +56,7 @@ struct FileSystem {
     ///             directory is returned.
     ///
     /// - Returns: An optional set of `URL`s within the working directory.
-    func locate(_ query: Regex<Substring>, in workingDirectory: URL) throws -> Set<URL> {
+    func locate(_ query: Regex<Substring>, in workingDirectory: URL) -> Set<URL> {
         var findings = Set<URL>()
         let resolvedDirectory = workingDirectory.resolvingSymlinksInPath()
 
@@ -92,6 +97,15 @@ struct FileSystem {
                                         attributes: attributes)
     }
 
+    /// Delete a file or directory.
+    ///
+    /// This method is simply a wrapper around `FileManager`'s function:
+    /// ```
+    /// func removeItem(at url: URL) throws
+    /// ```
+    ///
+    /// - Parameters:
+    ///    - url: The `URL` of the target file to delete.
     func delete(_ url: URL) throws {
         try fileManager.removeItem(at: url)
     }
