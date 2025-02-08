@@ -1,29 +1,19 @@
-.PHONY: $(ALL_DEST) release debug universal clean help
+.PHONY: debug release build clean help
 
 BUILD_DIR := .build
 BIN_DIR := bin
-BIN_NAME := scrub
-
-ALL_DEST := x86_64 arm64
 
 debug: BUILD_CONF := debug
-debug: universal
+debug: build
 
 release: BUILD_CONF := release
-release: universal
+release: build
 
-universal: $(ALL_DEST)
-	$(eval UNIVERSAL_OUT := $(BIN_DIR)/$(BUILD_CONF)/universal)
-	mkdir -p $(UNIVERSAL_OUT)
-	lipo -create -output $(UNIVERSAL_OUT)/$(BIN_NAME) \
-		$(BIN_DIR)/$(BUILD_CONF)/x86_64/$(BIN_NAME) \
-		$(BIN_DIR)/$(BUILD_CONF)/arm64/$(BIN_NAME)
-
-$(ALL_DEST):
-	$(eval OUT_DIR := $(BIN_DIR)/$(BUILD_CONF)/$@)
-	swift build -c $(BUILD_CONF) --arch $@
+build:
+	$(eval OUT_DIR := $(BIN_DIR)/$(BUILD_CONF)/)
+	swift build -c $(BUILD_CONF)
 	mkdir -p $(OUT_DIR)
-	cp $(BUILD_DIR)/$@-apple-macosx/$(BUILD_CONF)/$(BIN_NAME) $(OUT_DIR)
+	cp $(BUILD_DIR)/$(BUILD_CONF)/scrub $(OUT_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
