@@ -64,7 +64,7 @@ struct FileSystem {
                                                    includingPropertiesForKeys: nil,
                                                    options: .skipsSubdirectoryDescendants) {
             while let element = enumerator.nextObject() as? URL {
-                if element.lastPathComponent.contains(query) {
+                if element.lastPathComponent.contains(query.ignoresCase()) {
                     findings.insert(element)
                 }
             }
