@@ -2,24 +2,35 @@
 
 Simple macOS cleaner tool.
 
-## Motivation
+## Usage
 
-When you delete an application from your mac, it leaves a number of files on
-the system, which takes space for no reason. Although there are existing tools
-that can delete these files, I have not yet seen a command-line macOS cleaner
-tool (I'm not gonna lie, I didn't search for it). My laziness to search for
-existing tools combined with OCD and NIH syndrome, gave me enough motivation
-to write scrub.
+Using `Scrub` is rather simple:
+
+```
+scrub <operation> <file-name-to-clean> [--spaces <spaces>] [--force]
+```
+
+Currently, `scrub` provides three operations, namely `uninstall`, `clean`, and `list`. All these
+operations take the name (or part of the name) of an application. This name is then used to locate
+files on the filesystem and perform the operation. For example, both `scrub uninstall Numbers` and 
+`scrub uninstall bers` can be used to uninstall `Numbers` from the system.
+
+Searching for files is not done on a system-wide basis, instead only the usual directories for
+storing files are searched. These directories are referred to as search spaces, which are stored in
+a spaces `plist` file. Spaces file can be modified to include desired search spaces, or `--spaces`
+parameter can be used to provide a custom spaces file.
 
 ## Installation
 
-If you are interested in using scrub, you have to build from source:
+Unfortunately, there is no other way than building `scrub` from the source. This can be done with
+the following command:
+
 ```
 make release
 ```
 
 ## Contributions
 
-I welcome all different forms of contributions to this project, including
-simply using it. If you are interested in contributing to the development of
-scrub, you can report issues or feature requests, or create pull requests.
+I welcome all different forms of contributions to this project, including simply using it. If you
+are interested in contributing to the development of scrub, you can report issues or feature
+requests, or create pull requests.
