@@ -3,20 +3,6 @@ import Foundation
 /// Uninstall an Application and cleanup afterwards.
 final public class Uninstaller: DestructiveAction {
 
-    /// `Uninstaller` related errors.
-    enum UninstallerError: Error, LocalizedError {
-
-        /// Raised when the target application is not found.
-        case bundleIdError(String)
-
-        var errorDescription: String? {
-            switch self {
-            case .bundleIdError(let message):
-                return "Failed to get bundle id: " + message
-            }
-        }
-    }
-
     override public func perform() throws {
         var installedLocations = Set<URL>()
 
