@@ -12,8 +12,9 @@ final public class Searcher: BasicAction {
     override public func perform() throws {
         let locations = try locate(searchQuery: getQuery(using: targetFile))
 
-        if locations.isEmpty {
+        guard !locations.isEmpty else {
             print("No files found!")
+            return
         }
 
         for file in locations {

@@ -79,12 +79,15 @@ public class DestructiveAction: BasicAction {
                 print("Delete \(file.path())? (Y/n)")
 
                 if let response = readLine()?.first?.lowercased() {
-                    if response == "y" {
-                        break
-                    } else if response == "n" {
+                    switch response {
+                    case "n":
                         print("Skipping \(file.path())")
                         return
-                    } else {
+
+                    case "y":
+                       break
+
+                    default:
                         print("Unrecognized input.")
                     }
                 }
