@@ -61,6 +61,9 @@ public class BasicAction: Action {
 /// An action that can delete files and directories.
 public class DestructiveAction: BasicAction {
 
+    /// The required right for performing a privileged destructive action.
+    lazy private(set) var authRequestRight: AuthorizationRequestRight = .destructive
+
     /// Delete a file or directory.
     ///
     /// - Parameters:
