@@ -1,10 +1,3 @@
-//
-//  Uninstaller.swift
-//  
-//
-//  Created by Hossein Monjezi on 11.08.24.
-//
-
 import Foundation
 
 /// Uninstall an Application and cleanup afterwards.

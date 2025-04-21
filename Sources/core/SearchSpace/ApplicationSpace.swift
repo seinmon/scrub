@@ -1,10 +1,3 @@
-//
-//  ApplicationSpace.swift
-//  
-//
-//  Created by Hossein Monjezi on 17.08.24.
-//
-
 import Foundation
 
 /// A representation of default application related search spaces.

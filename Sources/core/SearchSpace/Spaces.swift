@@ -1,10 +1,3 @@
-//
-//  Spaces.swift
-//  
-//
-//  Created by Hossein Monjezi on 17.08.24.
-//
-
 import Foundation
 
 // This enables us to change underlying structure of Spaces without breaking the functionality.

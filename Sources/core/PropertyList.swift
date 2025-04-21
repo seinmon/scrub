@@ -1,10 +1,3 @@
-//
-//  PropertyList.swift
-//
-//
-//  Created by Hossein Monjezi on 24.07.24.
-//
-
 import Foundation
 
 /// An object representing a PropertyList files in the file system.

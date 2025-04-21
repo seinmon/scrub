@@ -1,10 +1,3 @@
-//
-//  Cleaner.swift
-//  scrub
-//
-//  Created by Hossein Monjezi on 14.07.24.
-//
-
 import Foundation
 
 /// Deletes files and directories.

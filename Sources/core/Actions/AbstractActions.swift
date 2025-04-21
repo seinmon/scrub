@@ -1,10 +1,3 @@
-//
-//  AbstractActions.swift
-//
-//
-//  Created by Hossein Monjezi on 11.08.24.
-//
-
 import Foundation
 
 /// An interface to an action that could be performed by scrub.

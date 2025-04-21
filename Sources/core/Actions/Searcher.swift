@@ -1,10 +1,3 @@
-//
-//  Searcher.swift
-//
-//
-//  Created by Hossein Monjezi on 11.08.24.
-//
-
 import Foundation
 
 /// Searches and lists locations related to a target.

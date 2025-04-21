@@ -1,10 +1,3 @@
-//
-//  SearchSpace.swift
-//
-//
-//  Created by Hossein Monjezi on 25.07.24.
-//
-
 import Foundation
 
 /// Directories to search when scrubbing the system.

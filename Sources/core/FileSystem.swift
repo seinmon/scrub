@@ -1,10 +1,3 @@
-//
-//  FileSystem.swift
-//
-//
-//  Created by Hossein Monjezi on 24.07.24.
-//
-
 import Foundation
 
 /// File system handler.

@@ -1,10 +1,3 @@
-//
-//  Operation.swift
-//
-//
-//  Created by Hossein Monjezi on 17.08.24.
-//
-
 import Foundation
 import ArgumentParser
 
