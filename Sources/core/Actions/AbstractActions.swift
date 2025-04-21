@@ -66,27 +66,29 @@ public class DestructiveAction: BasicAction {
     /// - Parameters:
     ///    - file: `URL` to delete.
     ///    - force: If set, will not ask for user's confirmation before deleting the target file.
-    func delete(_ file: URL, force: Bool) throws {
-        if !force {
-            while true {
-                print("Delete \(file.path())? (Y/n)")
+    func delete(_ files: Set<URL>, force: Bool) throws {
+        for file in files {
+            if !force {
+                responseLoop: while true {
+                    print("Delete \(file.path())? (Y/n)")
 
-                if let response = readLine()?.first?.lowercased() {
-                    switch response {
-                    case "n":
-                        print("Skipping \(file.path())")
-                        return
+                    if let response = readLine()?.first?.lowercased() {
+                        switch response {
+                        case "n":
+                            print("Skipping \(file.path())")
+                            return
 
-                    case "y":
-                       break
+                        case "y":
+                            break responseLoop
 
-                    default:
-                        print("Unrecognized input.")
+                        default:
+                            print("Unrecognized input.")
+                        }
                     }
                 }
             }
-        }
 
-        try FileSystem.shared.delete(file)
+            try FileSystem.shared.delete(file)
+        }
     }
 }

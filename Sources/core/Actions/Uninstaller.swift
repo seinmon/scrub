@@ -2,7 +2,6 @@ import Foundation
 
 /// Uninstall an Application and cleanup afterwards.
 final public class Uninstaller: DestructiveAction {
-
     override public func perform() throws {
         var installedLocations = Set<URL>()
 
@@ -15,8 +14,6 @@ final public class Uninstaller: DestructiveAction {
             print("Application not found!")
         }
 
-        for application in installedLocations {
-            try delete(application, force: false)
-        }
+        try delete(installedLocations, force: false)
     }
 }

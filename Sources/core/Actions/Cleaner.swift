@@ -9,8 +9,6 @@ final public class Cleaner: DestructiveAction {
             print("Nothing to clean!")
         }
 
-        for file in locations {
-            try delete(file, force: force)
-        }
+        try delete(locations, force: force)
     }
 }
