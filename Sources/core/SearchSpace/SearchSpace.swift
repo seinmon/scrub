@@ -22,7 +22,7 @@ public struct SearchSpace: Sequence {
         /// Raised when a user provided space file does not exist.
         case invalidSpacesFile
 
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
             case .invalidSpacesFile:
                 return "Invalid search space file."

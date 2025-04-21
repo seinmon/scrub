@@ -16,7 +16,7 @@ final public class Uninstaller: DestructiveAction {
         /// Raised when the target application is not found.
         case bundleIdError(String)
 
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
             case .bundleIdError(let message):
                 return "Failed to get bundle id: " + message
