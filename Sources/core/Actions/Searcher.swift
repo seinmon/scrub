@@ -11,7 +11,7 @@ final public class Searcher: BasicAction {
         }
 
         for file in locations {
-            print(file.path())
+            print(file.pathWithoutPercentEncoding)
         }
     }
 }

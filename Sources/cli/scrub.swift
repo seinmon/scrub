@@ -23,12 +23,6 @@ struct Scrub: ParsableCommand {
     @Flag(name: [.short, .long], help: "If set, files are deleted without user confirmation.")
     var force: Bool = false
 
-    private var searchSpace: SearchSpace {
-        get throws {
-            try SearchSpace(spacesFilePath: spaces)
-        }
-    }
-
     mutating func run() throws {
         let operation = try getAction(for: operation)
         try operation.perform()
@@ -37,13 +31,13 @@ struct Scrub: ParsableCommand {
     private func getAction(for operation: Operation) throws -> Action {
         switch operation {
         case .uninstall:
-            return try Uninstaller(for: fileNameToClean, in: searchSpace, withForce: force)
+            return try Uninstaller(for: fileNameToClean, in: spaces, withForce: force)
 
         case .clean:
-            return try Cleaner(for: fileNameToClean, in: searchSpace, withForce: force)
+            return try Cleaner(for: fileNameToClean, in: spaces, withForce: force)
 
         case .list:
-            return try Searcher(for: fileNameToClean, in: searchSpace, withForce: force)
+            return try Searcher(for: fileNameToClean, in: spaces, withForce: force)
         }
     }
 }

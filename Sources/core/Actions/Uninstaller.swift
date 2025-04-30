@@ -2,6 +2,10 @@ import Foundation
 
 /// Uninstall an Application and cleanup afterwards.
 final public class Uninstaller: DestructiveAction {
+    override class var authRequestRight: AuthorizationRequestRight {
+        return .uninstaller
+    }
+
     override public func perform() throws {
         var installedLocations = Set<URL>()
 

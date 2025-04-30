@@ -19,9 +19,9 @@ public class BasicAction: Action {
     /// If set to `True`, the action will be performed without asking for the user's confirmation.
     let force: Bool
 
-    public init(for targetFile: String, in searchSpace: SearchSpace, withForce force: Bool) {
+    public init(for targetFile: String, in spacesFile: URL?, withForce force: Bool) throws {
+        self.searchSpace = try SearchSpace(spacesFilePath: spacesFile)
         self.targetFile = targetFile
-        self.searchSpace = searchSpace
         self.force = force
     }
 
@@ -62,7 +62,9 @@ public class BasicAction: Action {
 public class DestructiveAction: BasicAction {
 
     /// The required right for performing a privileged destructive action.
-    lazy private(set) var authRequestRight: AuthorizationRequestRight = .destructive
+    class var authRequestRight: AuthorizationRequestRight {
+        fatalError("Cannot get authorization right from an abstract destructive action.")
+    }
 
     /// Delete a file or directory.
     ///
@@ -70,16 +72,16 @@ public class DestructiveAction: BasicAction {
     ///    - file: `URL` to delete.
     ///    - force: If set, will not ask for user's confirmation before deleting the target file.
     func delete(_ files: Set<URL>, force: Bool) throws {
-        for file in files {
+        filesLoop: for file in files {
             if !force {
                 responseLoop: while true {
-                    print("Delete \(file.path())? (Y/n)")
+                    print("Delete \(file.pathWithoutPercentEncoding)? (Y/n)")
 
                     if let response = readLine()?.first?.lowercased() {
                         switch response {
                         case "n":
-                            print("Skipping \(file.path())")
-                            return
+                            print("Skipping \(file.pathWithoutPercentEncoding)")
+                            continue filesLoop
 
                         case "y":
                             break responseLoop
@@ -91,7 +93,19 @@ public class DestructiveAction: BasicAction {
                 }
             }
 
-            try FileSystem.shared.delete(file)
+            try delete(file)
         }
+    }
+
+    private func delete(_ file: URL) throws {
+        try file.isOwnedByRoot ? try privilegedDelete(file) : try unprivilegedDelete(file)
+    }
+
+    private func privilegedDelete(_ file: URL) throws {
+        // TODO: Implement the authorization and privilege file deletion.
+    }
+
+    private func unprivilegedDelete(_ file: URL) throws {
+        try FileSystem.shared.delete(file)
     }
 }
