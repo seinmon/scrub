@@ -1,7 +1,7 @@
 import Foundation
 
 /// Directories to search when scrubbing the system.
-public struct SearchSpace: Sequence {
+struct SearchSpace: Sequence {
 
     public func makeIterator() -> Spaces.Iterator {
         return spaces.makeIterator()
@@ -51,7 +51,7 @@ public struct SearchSpace: Sequence {
 
                 print("""
                     Search space file does not exist. \
-                    Creating default search space at \(spacesFile.path()).
+                    Creating default search space at \(spacesFile.pathWithoutPercentEncoding).
                     You can modify this file to add to, or remove a directory from the search space.
                     """)
 
