@@ -102,7 +102,9 @@ public class DestructiveAction: BasicAction {
     }
 
     private func privilegedDelete(_ file: URL) throws {
-        // TODO: Implement the authorization and privilege file deletion.
+        var authService = try AuthorizationService(for: Self.authRequestRight)
+        var externalAuthForm = try authService.authorizeForPrivilegedServices()
+        // TODO: Call `scrub-service`
     }
 
     private func unprivilegedDelete(_ file: URL) throws {

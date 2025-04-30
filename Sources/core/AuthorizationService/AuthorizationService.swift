@@ -117,8 +117,7 @@ struct AuthorizationService {
     /// Use this initializer if no previous authorization has been done. If your goal is to validate a previous authorization from an external
     /// process, use:
     /// ```
-    /// init(for request: AuthorizationRequestRight,
-    ///      with externalForm: AuthorizationExternalForm) throws
+    /// init(with externalRef: ExternalAuthorizationReference) throws
     /// ```
     ///
     /// - Parameters:
@@ -137,12 +136,10 @@ struct AuthorizationService {
     /// Initialize `AuthorizationService` with certain rights and a pre-existing authorization from an external process.
     ///
     /// - Parameters:
-    ///    - request: `AuthorizationRequestRight` that indicates which right should be authorized.
-    ///    - externalForm: `AuthorizationExternalForm` to use for validation of the authorization.
-    init(for request: AuthorizationRequestRight,
-         with externalForm: AuthorizationExternalForm) throws {
-        try self.init(for: request)
-        self.externalForm = externalForm
+    ///    - externalRef: Representation of authorization carried out by an external process.
+    init(with externalRef: ExternalAuthorizationReference) throws {
+        try self.init(for: externalRef.authRequestRight)
+        self.externalForm = externalRef.externalAuthForm
     }
 
     /// Authorize a user with certain rights to call a privileged service.
