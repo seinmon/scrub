@@ -40,7 +40,7 @@ public class PrivilegedScrubRequest: NSObject, NSSecureCoding {
     /// External authorization reference that is used to validate user authorization.
     let externalAuthReference: ExternalAuthorizationReference
 
-    /// Target file of the operation.
+    /// Target file of the action.
     let targetFile: URL
 
     init(actionType: PrivilegedActionType,
