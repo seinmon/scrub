@@ -54,6 +54,23 @@ class BasicAction: Action {
 /// An action that can delete files and directories.
 class DestructiveAction: BasicAction {
 
+    /// `DestructiveAction` related errors.
+    enum DestructiveActionError: Error, LocalizedError {
+
+        /// Raised when the response for a privileged action is not received within 5 seconds.
+        case timeout
+
+        var errorDescription: String? {
+            switch self {
+            case .timeout:
+                return """
+                    Timed out waiting for operation to complete. \
+                    This usually indicates internal error.
+                    """
+            }
+        }
+    }
+
     /// The required right for performing a privileged destructive action.
     class var authRequestRight: AuthorizationRequestRight {
         fatalError("Cannot get authorization right from an abstract destructive action.")
@@ -104,8 +121,7 @@ class DestructiveAction: BasicAction {
                                                       targetFile: file), semaphore: semaphore)
 
         if semaphore.wait(timeout: DispatchTime.now() + .seconds(5)) == .timedOut {
-            print(
-                "Timed out waiting for scrub-service to delete: \(file.pathWithoutPercentEncoding)")
+            throw DestructiveActionError.timeout
         }
     }
 
