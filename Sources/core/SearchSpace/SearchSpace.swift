@@ -3,7 +3,7 @@ import Foundation
 /// Directories to search when scrubbing the system.
 struct SearchSpace: Sequence {
 
-    public func makeIterator() -> Spaces.Iterator {
+    func makeIterator() -> Spaces.Iterator {
         return spaces.makeIterator()
     }
 
@@ -34,7 +34,7 @@ struct SearchSpace: Sequence {
     /// file system.
     ///
     /// - throws:`SearchSpaceError.invalidSpacesFile` when a user provided spaces file is invalid.
-    public init(spacesFilePath: URL? = nil) throws {
+    init(spacesFilePath: URL? = nil) throws {
         let spacesFile = spacesFilePath == nil ? FileSystem.File.config : spacesFilePath!
 
         do {

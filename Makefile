@@ -14,6 +14,7 @@ build:
 	swift build -c $(BUILD_CONF)
 	mkdir -p $(OUT_DIR)
 	cp $(BUILD_DIR)/$(BUILD_CONF)/scrub $(OUT_DIR)
+	cp $(BUILD_DIR)/$(BUILD_CONF)/scrub-service $(OUT_DIR)
 
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)

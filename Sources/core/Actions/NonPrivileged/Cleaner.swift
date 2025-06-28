@@ -1,7 +1,7 @@
 import Foundation
 
 /// Deletes files and directories.
-final public class Cleaner: DestructiveAction {
+final class Cleaner: DestructiveAction {
     override class var authRequestRight: AuthorizationRequestRight {
         return .cleaner
     }

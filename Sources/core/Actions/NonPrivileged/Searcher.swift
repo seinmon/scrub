@@ -1,7 +1,7 @@
 import Foundation
 
 /// Searches and lists locations related to a target.
-final public class Searcher: BasicAction {
+final class Searcher: BasicAction {
     override public func perform() throws {
         let locations = try locate(searchQuery: getQuery(using: targetFile))
 

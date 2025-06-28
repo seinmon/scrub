@@ -23,13 +23,8 @@ struct FileSystem {
 
         /// Config file path that contains default search spaces.
         static var config: URL {
-            let applicationSupportDir = FileManager.default.urls(for: .applicationSupportDirectory,
-                                                                 in: .systemDomainMask)
-            guard applicationSupportDir.count == 1 else {
-                return URL(filePath: "/Library/Application Support/scrub/spaces.plist")
-            }
-
-            return applicationSupportDir[0].appending(path: "scrub/spaces.plist")
+            FileSystem.Directory.homeDirectoryForCurrentUser
+                .appending(path: ".scrub/search_space.plist")
         }
     }
 

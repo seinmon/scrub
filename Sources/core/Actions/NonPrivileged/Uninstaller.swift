@@ -1,7 +1,7 @@
 import Foundation
 
 /// Uninstall an Application and cleanup afterwards.
-final public class Uninstaller: DestructiveAction {
+final class Uninstaller: DestructiveAction {
     override class var authRequestRight: AuthorizationRequestRight {
         return .uninstaller
     }

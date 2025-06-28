@@ -12,7 +12,7 @@ struct Scrub: ParsableCommand {
     @Argument(help: "Operation to perform.")
     var operation: Operation
 
-    @Argument(help: "Name or part of the target files to clean.")
+    @Argument(help: "Name or part of the target file name to clean.")
     var fileNameToClean: String
 
     @Option(name: [.short, .long],
@@ -24,20 +24,11 @@ struct Scrub: ParsableCommand {
     var force: Bool = false
 
     mutating func run() throws {
-        let operation = try getAction(for: operation)
-        try operation.perform()
-    }
-
-    private func getAction(for operation: Operation) throws -> Action {
-        switch operation {
-        case .uninstall:
-            return try Uninstaller(for: fileNameToClean, in: spaces, withForce: force)
-
-        case .clean:
-            return try Cleaner(for: fileNameToClean, in: spaces, withForce: force)
-
-        case .list:
-            return try Searcher(for: fileNameToClean, in: spaces, withForce: force)
-        }
+        let request = ScrubRequest(actionType: operation.actionType,
+                               targetFile: fileNameToClean,
+                               force: force,
+                               spacesFile: spaces)
+        try ActionFactory.create(using: request)
+            .perform()
     }
 }

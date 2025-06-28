@@ -1,14 +1,7 @@
 import Foundation
 
-/// An interface to an action that could be performed by scrub.
-public protocol Action {
-
-    /// Performs the action.
-    func perform() throws
-}
-
 /// Abstract non-destructive action.
-public class BasicAction: Action {
+class BasicAction: Action {
 
     /// Target of the action.
     let targetFile: String
@@ -19,7 +12,7 @@ public class BasicAction: Action {
     /// If set to `True`, the action will be performed without asking for the user's confirmation.
     let force: Bool
 
-    public init(for targetFile: String, in spacesFile: URL?, withForce force: Bool) throws {
+    init(for targetFile: String, in spacesFile: URL?, withForce force: Bool) throws {
         self.searchSpace = try SearchSpace(spacesFilePath: spacesFile)
         self.targetFile = targetFile
         self.force = force
@@ -59,7 +52,7 @@ public class BasicAction: Action {
 }
 
 /// An action that can delete files and directories.
-public class DestructiveAction: BasicAction {
+class DestructiveAction: BasicAction {
 
     /// The required right for performing a privileged destructive action.
     class var authRequestRight: AuthorizationRequestRight {
@@ -103,8 +96,10 @@ public class DestructiveAction: BasicAction {
 
     private func privilegedDelete(_ file: URL) throws {
         var authService = try AuthorizationService(for: Self.authRequestRight)
-        var externalAuthForm = try authService.authorizeForPrivilegedServices()
-        // TODO: Call `scrub-service`
+        let externalAuthRef = try authService.authorizeForPrivilegedServices()
+        PrivilegedScrub().send(PrivilegedScrubRequest(actionType: .deletion,
+                                                      externalAuthReference: externalAuthRef,
+                                                      targetFile: file))
     }
 
     private func unprivilegedDelete(_ file: URL) throws {

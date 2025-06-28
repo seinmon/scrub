@@ -1,13 +1,54 @@
 import Foundation
 
+/// Represents the authorization reference from an external process.
+class ExternalAuthorizationReference: NSSecureCoding {
+    static var supportsSecureCoding: Bool {
+        return true
+    }
+
+    func encode(with coder: NSCoder) {
+        coder.encode(authRequestRight.rawValue, forKey: "extAuthRight")
+        let extAuthData = withUnsafeBytes(of: externalAuthForm) { Data($0) }
+        coder.encode(extAuthData, forKey: "extAuth")
+    }
+
+    required init?(coder: NSCoder) {
+        let rawExtAuthRight = coder.decodeInteger(forKey: "extAuthRight")
+
+        guard let extAuthRight = AuthorizationRequestRight(rawValue: rawExtAuthRight) else {
+            return nil
+        }
+
+        guard let data = coder.decodeObject(of: NSData.self, forKey: "extAuth") as Data?,
+              data.count == MemoryLayout<AuthorizationExternalForm>.size else {
+            return nil
+        }
+
+        self.authRequestRight = extAuthRight
+        self.externalAuthForm = data.withUnsafeBytes { $0.load(as: AuthorizationExternalForm.self) }
+    }
+
+    /// Requested right for authorization.
+    let authRequestRight: AuthorizationRequestRight
+
+    /// External authorization form that can be used to validate authorization of rights.
+    let externalAuthForm: AuthorizationExternalForm
+
+    fileprivate init(authRequestRight: AuthorizationRequestRight,
+                     externalAuthForm: AuthorizationExternalForm) {
+        self.authRequestRight = authRequestRight
+        self.externalAuthForm = externalAuthForm
+    }
+}
+
 /// Authorization right needed to perform a certain privileged `Scrub` action on the system.
-enum AuthorizationRequestRight {
+enum AuthorizationRequestRight: Int {
 
     /// Authentication request to perform an uninstaller action.
-    case uninstaller
+    case uninstaller = 0
 
     /// Authentication request to perform a cleaner action.
-    case cleaner
+    case cleaner = 1
 
     /// Value of the right required to complete the provided request.
     fileprivate var right: String {
@@ -26,6 +67,9 @@ struct AuthorizationService {
 
     /// External form of the authorization reference, to send to the privileged service.
     private(set) var externalForm: AuthorizationExternalForm
+
+    /// The type of requested right, which is used to generate `ExternalAuthorizationReference`.
+    private let authRequestRight: AuthorizationRequestRight
 
     /// The right that was requested by the authorization requester.
     private var right: AuthorizationItem
@@ -124,6 +168,7 @@ struct AuthorizationService {
     ///    - request: `AuthorizationRequestRight` that indicates which right should be authorized.
     ///
     init(for request: AuthorizationRequestRight) throws {
+        self.authRequestRight = request
         self.externalForm = AuthorizationExternalForm()
 
         guard let rightName = NSString(string: request.right).utf8String else {
@@ -147,7 +192,7 @@ struct AuthorizationService {
     /// - Returns: An external form of authorization reference to use by the privileged service.
     ///
     /// - Throws: `AuthorizationError` in case of unsuccessful authorization.
-    mutating func authorizeForPrivilegedServices() throws -> AuthorizationExternalForm {
+    mutating func authorizeForPrivilegedServices() throws -> ExternalAuthorizationReference {
         var authRef: AuthorizationRef?
 
         let authStatus = AuthorizationCreate(&completeRights, nil, authFlags, &authRef)
@@ -167,7 +212,8 @@ struct AuthorizationService {
             throw AuthorizationError.failedToGetExtenalForm(externalFormStatus)
         }
 
-        return self.externalForm
+        return ExternalAuthorizationReference(authRequestRight: self.authRequestRight,
+                                              externalAuthForm: self.externalForm)
     }
 
     /// Validate the user authorization with correct rights to perform a privileged task.
