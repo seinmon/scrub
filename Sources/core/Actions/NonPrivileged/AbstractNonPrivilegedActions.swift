@@ -103,7 +103,10 @@ class DestructiveAction: BasicAction {
                                                       externalAuthReference: externalAuthRef,
                                                       targetFile: file), semaphore: semaphore)
 
-        semaphore.wait()
+        if semaphore.wait(timeout: DispatchTime.now() + .seconds(5)) == .timedOut {
+            print(
+                "Timed out waiting for scrub-service to delete: \(file.pathWithoutPercentEncoding)")
+        }
     }
 
     private func unprivilegedDelete(_ file: URL) throws {
