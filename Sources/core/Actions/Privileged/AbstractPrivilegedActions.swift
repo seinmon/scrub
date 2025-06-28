@@ -5,11 +5,15 @@ import Foundation
 /// This action simply takes a set of file `URL`s to operate on. It requires a valid `ExternalAuthorizationReference` to be
 /// initialized, which ensures it can only be used by the privileged `scrub-service`.
 class PrivilegedAction: Action {
-    let file: URL
+
+    /// Target of the action.
+    let targetFile: URL
+
+    /// Instance of `AuthorizationService`, which is used to validate the user's privilege.
     var authService: AuthorizationService
 
-    init(externalAuthRef: ExternalAuthorizationReference, targetFiles: URL) throws {
-        self.file = targetFiles
+    init(externalAuthRef: ExternalAuthorizationReference, targetFile: URL) throws {
+        self.targetFile = targetFile
         self.authService = try AuthorizationService(with: externalAuthRef)
     }
 

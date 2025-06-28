@@ -4,6 +4,6 @@ import Foundation
 class PrivilegedCleaner: PrivilegedAction {
     override public func perform() throws {
         try authService.validate()
-        try FileSystem.shared.delete(file)
+        try FileSystem.shared.delete(targetFile)
     }
 }

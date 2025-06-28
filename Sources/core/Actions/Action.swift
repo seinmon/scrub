@@ -20,7 +20,7 @@ public struct ActionFactory {
         switch request.actionType {
         case .deletion:
             return try PrivilegedCleaner(externalAuthRef: request.externalAuthReference,
-                                         targetFiles: request.targetFile)
+                                         targetFile: request.targetFile)
         }
     }
 }
