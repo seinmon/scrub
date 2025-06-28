@@ -38,6 +38,5 @@ struct ScrubService {
         let listener = NSXPCListener(machServiceName: ScrubServiceConstants.serviceName)
         listener.delegate = delegate
         listener.resume()
-        RunLoop.current.run()
     }
 }

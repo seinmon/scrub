@@ -14,17 +14,20 @@ struct PrivilegedScrub {
     ///
     /// - Parameters:
     ///    - request: A request describing the desired privileged action.
-    func send(_ request: PrivilegedScrubRequest) {
+    func send(_ request: PrivilegedScrubRequest, semaphore: DispatchSemaphore) {
         if let service = connection.remoteObjectProxy as? PrivilegedScrubProtocol {
-            service.handle(request) { err in
+            service.handle(request) { [semaphore] err in
                 if let err = err {
                     print("Failed with error: \(err.localizedDescription)")
                 }
+
 #if DEBUG
                 if err == nil {
                     print("Done.")
                 }
 #endif // DEBUG
+
+                semaphore.signal()
             }
         }
     }

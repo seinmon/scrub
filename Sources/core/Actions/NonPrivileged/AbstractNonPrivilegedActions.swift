@@ -97,9 +97,13 @@ class DestructiveAction: BasicAction {
     private func privilegedDelete(_ file: URL) throws {
         var authService = try AuthorizationService(for: Self.authRequestRight)
         let externalAuthRef = try authService.authorizeForPrivilegedServices()
+        let semaphore = DispatchSemaphore(value: 0)
+
         PrivilegedScrub().send(PrivilegedScrubRequest(actionType: .deletion,
                                                       externalAuthReference: externalAuthRef,
-                                                      targetFile: file))
+                                                      targetFile: file), semaphore: semaphore)
+
+        semaphore.wait()
     }
 
     private func unprivilegedDelete(_ file: URL) throws {
