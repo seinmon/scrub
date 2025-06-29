@@ -13,7 +13,7 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/libexec/scrub-service</string>
+        <string>/opt/scrub/scrub-service</string>
     </array>
 
     <key>RunAtLoad</key>
